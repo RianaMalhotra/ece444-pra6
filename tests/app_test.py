@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from project.app import app, db
+from sqlalchemy import text
 
 TEST_DB = "test.db"
 
@@ -42,8 +43,9 @@ def test_index(client):
 
 def test_database(client):
     """initial test. ensure that the database exists"""
-    tester = Path("test.db").is_file()
-    assert tester
+    with app.app_context():
+        result = db.session.execute(text("SELECT 1")).scalar()
+        assert result == 1
 
 
 def test_empty_db(client):
