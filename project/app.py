@@ -15,7 +15,6 @@ from flask import (
 )
 from flask_sqlalchemy import SQLAlchemy
 
-
 basedir = Path(__file__).resolve().parent
 
 # configuration
