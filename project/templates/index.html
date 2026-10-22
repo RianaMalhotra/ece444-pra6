@@ -72,6 +72,9 @@
         <li class="entry">
           <h2 id="{{ entry.id }}">{{ entry.title }}</h2>
           {{ entry.text|safe }}
+          {% if session.logged_in %}
+          <button type="button" class="btn btn-outline-danger btn-sm delete-entry" data-post-id="{{ entry.id }}">Delete</button>
+          {% endif %}
         </li>
         {% else %}
         <li><em>No entries yet. Add some!</em></li>
