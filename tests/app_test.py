@@ -84,7 +84,27 @@ def test_delete_message(client):
     rv = client.get("/delete/1")
     data = json.loads(rv.data)
     assert data["status"] == 0
+    assert rv.status_code == 401
     login(client, app.config["USERNAME"], app.config["PASSWORD"])
     rv = client.get("/delete/1")
     data = json.loads(rv.data)
     assert data["status"] == 1
+
+
+def test_search(client):
+    """Search matches post titles and text, without unrelated posts."""
+    login(client, app.config["USERNAME"], app.config["PASSWORD"])
+    client.post("/add", data={"title": "Wildfire report", "text": "Smoke detected"})
+    client.post("/add", data={"title": "Weather update", "text": "Clear skies"})
+
+    response = client.get("/search/?query=wildfire")
+    assert response.status_code == 200
+    assert b"Wildfire report" in response.data
+    assert b"Weather update" not in response.data
+
+    response = client.get("/search/?query=smoke")
+    assert b"Wildfire report" in response.data
+
+    response = client.get("/search/?query=nomatch")
+    assert b"Wildfire report" not in response.data
+    assert b"Weather update" not in response.data
