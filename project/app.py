@@ -19,9 +19,9 @@ basedir = Path(__file__).resolve().parent
 
 # configuration
 DATABASE = "flaskr.db"
-USERNAME = "admin"
-PASSWORD = "admin"
-SECRET_KEY = "change_me"
+USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
+SECRET_KEY = os.environ.get("SECRET_KEY", "change_me")
 url = os.getenv("DATABASE_URL", f"sqlite:///{Path(basedir).joinpath(DATABASE)}")
 
 if url.startswith("postgres://"):
