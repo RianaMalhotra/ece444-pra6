@@ -1,26 +1,18 @@
-(function () {
-  console.log("ready!"); // sanity check
-})();
-
-const postElements = document.getElementsByClassName("entry");
-
-for (var i = 0; i < postElements.length; i++) {
-  postElements[i].addEventListener("click", function () {
-    const postId = this.getElementsByTagName("h2")[0].getAttribute("id");
-    const node = this;
-    fetch(`/delete/${postId}`)
-      .then(function (resp) {
-        return resp.json();
-      })
-      .then(function (result) {
-        if (result.status === 1) {
-          node.parentNode.removeChild(node);
-          console.log(result);
-        }
-        location.reload();
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+document.querySelectorAll(".delete-entry").forEach((button) => {
+  button.addEventListener("click", async () => {
+    if (!window.confirm("Delete this blog entry?")) return;
+    const postId = button.dataset.postId;
+    try {
+      const response = await fetch(`/delete/${postId}`);
+      const result = await response.json();
+      if (!response.ok || result.status !== 1) {
+        alert(result.message || "Could not delete the entry.");
+        return;
+      }
+      button.closest(".entry").remove();
+    } catch (error) {
+      console.error(error);
+      alert("Could not delete the entry.");
+    }
   });
-}
+});
